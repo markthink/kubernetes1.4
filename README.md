@@ -30,6 +30,9 @@ Ansible 的第一个版本发布于 2012 年 2 月。Ansible 默认通过 SSH �
 
 - 硬件配置： 三台 CPU1核 内存1.5G机器-需要可以访问国内网络(Ansible安装和国内镜像下载需要)
 - 操作系统：Centos7.2
+- 代码库-https://github.com/MarkThink/kubernetes1.4
+
+注:本代码库源于https://github.com/errordeveloper/kubernetes-ansible-vagrant.git修改而来
 
 Vagrant配置文件Vagrantfile：
 
