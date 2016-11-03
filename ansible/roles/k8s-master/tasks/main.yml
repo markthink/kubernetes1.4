@@ -1,0 +1,68 @@
+---
+- name: Ensure kubeadm initialization
+  become: yes
+  command: "kubeadm init --token=2f1a31.00f66dec74fd53f3 --api-advertise-addresses=172.42.42.11"
+  # command: "kubeadm init --token=2f1a31.00f66dec74fd53f3 --api-advertise-addresses=172.42.42.11 --skip-preflight-checks=true"
+  tags:
+    - k8s
+
+- name: Ensure Network Start Script
+  become: yes
+  copy:
+    src: files/{{ item }}
+    dest: /usr/local/bin/{{ item }}
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - "start-weave"
+    - "start-calico"
+    - "start-canal"
+
+- name: Ensure jq package is installed
+  become: yes
+  when: ansible_distribution == 'Ubuntu'
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - jq
+  tags:
+    - k8s
+
+- name: Ensure jq package is installed
+  become: yes
+  when: ansible_distribution == 'CentOS'
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - jq
+  tags:
+    - k8s
+
+- name: Set --advertise-address flag in kube-apiserver static pod manifest (workaround for https://github.com/kubernetes/kubernetes/issues/34101)
+  become: yes
+  shell: "jq '.spec.containers[0].command |= .+ [\"--advertise-address=172.42.42.11\"]' /etc/kubernetes/manifests/kube-apiserver.json > /tmp/kube-apiserver.json && mv /tmp/kube-apiserver.json /etc/kubernetes/manifests/kube-apiserver.json"
+  tags:
+    - k8s
+
+- name: Set --cluster-cidr flag in kube-proxy daemonset (workaround for https://github.com/kubernetes/kubernetes/issues/34101)
+  become: yes
+  shell: "kubectl -n kube-system get ds -l 'component=kube-proxy-amd64' -o json | jq '.items[0].spec.template.spec.containers[0].command |= .+ [\"--cluster-cidr=10.32.0.0/12\"]' | kubectl apply -f - && kubectl -n kube-system delete pods -l 'component=kube-proxy-amd64'"
+  tags:
+    - k8s
+
+# Equivalent of `firewall-cmd --permanent --zone=trusted --add-port=9898`
+- firewalld: port=6443/tcp zone=trusted permanent=true state=enabled immediate=true
+  when: ansible_distribution == 'CentOS'
+  tags:
+    - k8s
+
+# Equivalent of `firewall-cmd --permanent --zone=trusted --add-port=9898`
+- firewalld: port=9898/tcp zone=trusted permanent=true state=enabled immediate=true
+  when: ansible_distribution == 'CentOS'
+  tags:
+    - k8s
+
+- command: firewall-cmd --reload
