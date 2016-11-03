@@ -32,7 +32,7 @@ Ansible 的第一个版本发布于 2012 年 2 月。Ansible 默认通过 SSH �
 - 操作系统：Centos7.2
 - 代码库-https://github.com/MarkThink/kubernetes1.4
 
-注:本代码库源于https://github.com/errordeveloper/kubernetes-ansible-vagrant.git修改而来
+注:本代码库源于https://github.com/errordeveloper/kubernetes-ansible-vagrant.git
 
 Vagrant配置文件Vagrantfile：
 
