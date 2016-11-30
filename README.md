@@ -1,5 +1,9 @@
 # Ansible+Vagrant本地部署Kubernetes1.4
 
+摘要：Kubernetes作为领先的容器集群管理工具，很多初学者都希望能第一时间学习使用它，但由于国内访问国外镜像站点很慢，部署一直是广大初学者的痛点。之前我们基于官方的安装文档分享过Kubernetes1.4在阿里云美西节点的部署过程，本篇在上次分享的基础上更进一步，通过把相关镜像和软件安装源部署到内网，演示Ansible在vagrant上部署K8S的过程。
+
+
+
 上篇介绍了Kubernetes1.4在阿里云美西节点的部署过程，由于国内网络问题，很多留言表示并不通用，因此才有此下篇介绍本地部署K8S1.4的具体方法。
 
 Ansible是一个简单的自动化运维工具，主要用于配置管理和应用部署，功能类似于目前业界的配置管理工具 Chef,Puppet,Saltstack。Ansible 是通过 Python 语言开发。Ansible 平台由 Michael DeHaan 创建，他同时也是知名软件 Cobbler 与 Func 的作者。
@@ -104,38 +108,38 @@ cp yum.repo /etc/yum.repo.d/
 #yum.repo
 [base]
 name=base-repo
-baseurl=http://yum.51yixiao.com/base/
+baseurl=http://yum.caicloud.io/base/
 enabled=1
 gpgcheck=0
-gpgkey=http://yum.51yixiao.com/Centos7Base/RPM-GPG-KEY-CentOS-7
+gpgkey=http://yum.caicloud.io/Centos7Base/RPM-GPG-KEY-CentOS-7
 
 [epel]
 name=epel-repo
-baseurl=http://yum.51yixiao.com/epel/
+baseurl=http://yum.caicloud.io/epel/
 enabled=1
 gpgcheck=0
-gpgkey=http://yum.51yixiao.com/Centos7Base/RPM-GPG-KEY-CentOS-7
+gpgkey=http://yum.caicloud.io/Centos7Base/RPM-GPG-KEY-CentOS-7
 
 [extras]
 name=extras-repo
-baseurl=http://yum.51yixiao.com/extras/
+baseurl=http://yum.caicloud.io/extras/
 enabled=1
 gpgcheck=0
-gpgkey=http://yum.51yixiao.com/Centos7Base/RPM-GPG-KEY-CentOS-7
+gpgkey=http://yum.caicloud.io/Centos7Base/RPM-GPG-KEY-CentOS-7
 
 [kubernetes]
 name=kubernetes-repo
-baseurl=http://yum.51yixiao.com/kubernetes/
+baseurl=http://yum.caicloud.io/kubernetes/
 enabled=1
 gpgcheck=0
-gpgkey=http://yum.51yixiao.com/Centos7Base/RPM-GPG-KEY-CentOS-7
+gpgkey=http://yum.caicloud.io/Centos7Base/RPM-GPG-KEY-CentOS-7
 
 [updates]
 name=updates-repo
-baseurl=http://yum.51yixiao.com/updates/
+baseurl=http://yum.caicloud.io/updates/
 enabled=1
 gpgcheck=0
-gpgkey=http://yum.51yixiao.com/Centos7Base/RPM-GPG-KEY-CentOS-7
+gpgkey=http://yum.caicloud.io/Centos7Base/RPM-GPG-KEY-CentOS-7
 ```
 ##开始Ansible部署
 
